@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let score = 0;
     let gameStarted = false;
     let food = {x: 300, y: 200};
-    let snake = [{x: 16, y: 200}, {x: 140, y: 200}, {x:120, y:200}];
+    let snake = [{x: 160, y: 200}, {x: 140, y: 200}, {x:120, y:200}];
     let dx = cellSize; // Displacement on the x-axis
     let dy = 0; // Displacement on the y-axis
 
@@ -25,6 +25,12 @@ document.addEventListener("DOMContentLoaded", () => {
     function drawFoodAndSnake() {
         gameArena.innerHTML = ''; // if previously something is drawn remove it
         // Clean the game-arena and re-draw the new co-ordinate when snake move.
+
+
+        snake.forEach((snakeCell) => {
+            const element = drawDiv(snakeCell.x, snakeCell.y, 'snake');
+            gameArena.appendChild(element);
+        })
 
         const foodElement = drawDiv(food.x, food.y, 'food');
         gameArena.appendChild(foodElement); 
