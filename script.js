@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let snake = [{x: 160, y: 200}, {x: 140, y: 200}, {x:120, y:200}];
     let dx = cellSize; // Displacement on the x-axis
     let dy = 0; // Displacement on the y-axis
+    let gameSpeed = 200;
 
     function drawScoreBoard() {
         const scoreBoard = document.getElementById('score-board');
@@ -40,8 +41,9 @@ document.addEventListener("DOMContentLoaded", () => {
     function moveFood() {
         let newX, newY;
         do {
-            newX = Math.floor(Math.random() * ((arenaSize - cellSize)/cellSize) * cellSize);
-            newY = Math.floor(Math.random() * ((arenaSize - cellSize)/cellSize) * cellSize);
+            newX = Math.floor(Math.random() * ((arenaSize - cellSize)/cellSize)) * cellSize;
+            newY = Math.floor(Math.random() * ((arenaSize - cellSize)/cellSize)) * cellSize;
+            if(gameSpeed > 30) gameSpeed -= 10;
         } while(snake.some(snakeCell => snakeCell.x === newX && snakeCell.y === newY));
 
         food = {x: newX, y: newY};
@@ -91,12 +93,48 @@ document.addEventListener("DOMContentLoaded", () => {
             updateSnake();
             drawScoreBoard();
             drawFoodAndSnake();
-        }, 500)
+        }, gameSpeed)
+    }
+
+    function changeDirection(e) {
+        const LEFT_ARROW = 37;
+        const RIGHT_ARROW = 39;
+        const UP_ARROW = 38;
+        const DOWN_ARROW = 40;
+
+        const keyPressed = e.keyCode;
+
+        const isGoingUp = dy === -cellSize;
+        const isGoingDown = dy === cellSize;
+        const isGoingRight = dx === cellSize;
+        const isGoingLeft = dx === -cellSize;
+
+        
+        if(keyPressed === LEFT_ARROW && !isGoingRight) {
+            dy = 0;
+            dx = -cellSize;
+        }
+        if(keyPressed === RIGHT_ARROW && !isGoingLeft) {
+            dy = 0;
+            dx = cellSize;
+        }
+        if(keyPressed === UP_ARROW && !isGoingDown) {
+            dy = -cellSize;
+            dx = 0;
+        }
+        if(keyPressed === DOWN_ARROW && !isGoingUp) {
+            dy = cellSize;
+            dx = 0;
+        }
     }
 
     function runGame() {
-        gameStarted = true;
-        gameLoop();
+        if(!gameStarted) {
+            gameStarted = true;
+            gameLoop();
+            document.addEventListener('keydown', changeDirection);
+        }
+        
     }
 
     function inintiateGame() {
